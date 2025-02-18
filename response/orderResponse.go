@@ -11,6 +11,7 @@ type order struct{
 	LocationId string 	`json:"location_id"` 
 	NetAmount Money		`json:"net_amount_due_money"`
 	TotalMoney Money 	`json:"total_money"`
+	State	string		`json:"state"`
 	
 }
 type Item struct{
@@ -23,6 +24,6 @@ type Item struct{
 }
 
 type Money struct {
-	Amount   string `json:"amount"`
+	Amount   float64 `json:"amount"`
 	Currency string `json:"currency"`
 }

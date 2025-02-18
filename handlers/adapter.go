@@ -23,7 +23,6 @@ func CreateOrder(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "error in api call func", http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	// var formattedData map[string]interface{}
 	var res response.OrderResponse
 	fmt.Println(res)
 	json.Unmarshal(data,&res)
