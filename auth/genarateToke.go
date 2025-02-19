@@ -6,7 +6,7 @@ import (
 )
 
 //later take from env
-var jwtSecret = []byte("Abvslkfssjfdsjfdn1111121212")
+var JwtSecret = []byte("Abvslkfssjfdsjfdn1111121212")
 
 type Claims struct{
 	UserID      int    `json:"user_id"`
@@ -26,7 +26,7 @@ func GenarateToken(UserId int,AcessToken string) (string,error){
 		},
 	}
 	token:=jwt.NewWithClaims(jwt.SigningMethodHS256,claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString(JwtSecret)
 }
 
 
