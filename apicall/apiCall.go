@@ -32,25 +32,30 @@ func GetClient() *ClientSq{
 		client: &http.Client{Timeout: 10 * time.Second},
 	}
 }
-func (c *ClientSq) ApiCall(method string, endpoint string, data dto.Order) ([]byte, error)  {
+func (c *ClientSq) ApiCall(method string, endpoint string, data *dto.Order) ([]byte, error)  {
 	url := baseURL + endpoint
-
-	reqb, err := json.Marshal(data)
-	if err!=nil{
-		fmt.Println(err)
+	fmt.Println("url->",url)
+	var req *http.Request
+	var err error
+	if method == http.MethodGet {
+		req, err = http.NewRequest(method, url, nil)
+	} else {
+		reqb, err := json.Marshal(data)
+		if err != nil {
+			fmt.Println("Error marshaling JSON:", err)
+			return nil, fmt.Errorf("error marshaling request data")
+		}
+		req, err = http.NewRequest(method, url, bytes.NewBuffer(reqb))
 	}
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(reqb))
 	if err!=nil{
+		fmt.Println("error in creating req",err)
 		return nil,fmt.Errorf("error in creating request")
 
 	}
 	req.Header.Set("Square-Version", "2025-01-23")
 	req.Header.Set("Authorization", "Bearer "+c.AcessToken)
 	req.Header.Set("Content-Type", "application/json")
-
-
 	res,errreq:=c.client.Do(req)
-
 	if errreq!=nil{
 		log.Fatal("error in make request")
 		return nil,fmt.Errorf("error in make request")

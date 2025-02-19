@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"net/http"
 	"squarepos/handlers"
 
 	"github.com/gorilla/mux"
@@ -8,6 +9,9 @@ import (
 
 func GetRoutes() *mux.Router{
 	router:=mux.NewRouter()
-	router.HandleFunc("/order",handlers.CreateOrder).Methods("POST")
+	//create order
+	router.HandleFunc("/orders",handlers.CreateOrder).Methods(http.MethodPost)
+	//get order by order id
+	router.HandleFunc("/orders/{id}",handlers.GetOrderById).Methods(http.MethodGet)
 	return router;
 }
