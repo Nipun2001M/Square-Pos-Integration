@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"squarepos/apicall"
 	"squarepos/dto"
-	"squarepos/response"
-
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
@@ -20,18 +18,18 @@ func CreateOrder(w http.ResponseWriter, req *http.Request) {
 	}
 
 	client := apicall.GetClient()
-	data, error := client.ApiCall(http.MethodPost, "orders",OrderReq)
+	data, error := client.ApiCall(http.MethodPost, "orders", OrderReq)
 
 	if error != nil {
 		http.Error(w, "error in api call func", http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var res response.OrderResponse
+	var res dto.OrderResponse
 	var defaultRes map[string]interface{}
+	// Have a dto here
 	fmt.Println(res)
 	json.Unmarshal(data,&defaultRes)
 	json.NewEncoder(w).Encode(defaultRes)
-
 }
 
 func GetOrderById(w http.ResponseWriter,req *http.Request){
@@ -43,7 +41,7 @@ func GetOrderById(w http.ResponseWriter,req *http.Request){
 		http.Error(w, "error in api call func", http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var res response.OrderResponse
+	var res dto.OrderResponse
 	var defaultRes map[string]interface{}
 	fmt.Println(res)
 	json.Unmarshal(data,&defaultRes)
@@ -68,7 +66,7 @@ func MakePayment(w http.ResponseWriter,req * http.Request){
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var res response.OrderResponse
+	var res dto.OrderResponse
 	var defaultRes map[string]interface{}
 	fmt.Println(res)
 	json.Unmarshal(data,&defaultRes)
