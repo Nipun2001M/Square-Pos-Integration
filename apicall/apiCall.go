@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"squarepos/dto"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -32,7 +31,7 @@ func GetClient() *ClientSq{
 		client: &http.Client{Timeout: 10 * time.Second},
 	}
 }
-func (c *ClientSq) ApiCall(method string, endpoint string, data *dto.Order) ([]byte, error)  {
+func (c *ClientSq) ApiCall(method string, endpoint string, data interface{}) ([]byte, error)  {
 	url := baseURL + endpoint
 	fmt.Println("url->",url)
 	var req *http.Request

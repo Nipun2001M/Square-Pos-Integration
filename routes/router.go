@@ -13,5 +13,7 @@ func GetRoutes() *mux.Router{
 	router.HandleFunc("/orders",handlers.CreateOrder).Methods(http.MethodPost)
 	//get order by order id
 	router.HandleFunc("/orders/{id}",handlers.GetOrderById).Methods(http.MethodGet)
+	//make payment
+	router.HandleFunc("/orders/payments",handlers.MakePayment).Methods(http.MethodPost)
 	return router;
 }
