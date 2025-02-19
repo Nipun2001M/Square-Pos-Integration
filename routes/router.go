@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"squarepos/auth"
 	"squarepos/handlers"
 
 	"github.com/gorilla/mux"
@@ -13,5 +14,8 @@ func GetRoutes() *mux.Router{
 	router.HandleFunc("/orders",handlers.CreateOrder).Methods(http.MethodPost)
 	router.HandleFunc("/orders/{id}",handlers.GetOrderById).Methods(http.MethodGet)
 	router.HandleFunc("/orders/payments",handlers.MakePayment).Methods(http.MethodPost)
+
+	router.HandleFunc("/register",auth.RegisterUser).Methods(http.MethodPost)
+	router.HandleFunc("/login",auth.Login).Methods(http.MethodPost)
 	return router;
 }

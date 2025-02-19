@@ -10,12 +10,17 @@ import (
 
 func main() {
 
-	router := routes.GetRoutes()
 	database.Connect()
-	err := http.ListenAndServe(":8080", router)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Check why the above function is blocking the
+	router := routes.GetRoutes()
+	go func() {
+		err := http.ListenAndServe(":8080", router)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
 	fmt.Println("server running on port 8080")
+
+	select {}
+	// Check why the above function is blocking the
 }
