@@ -3,11 +3,9 @@ package auth
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"squarepos/database"
 	"squarepos/dto"
-
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,31 +13,29 @@ func Login(w http.ResponseWriter,req *http.Request){
 	var LoginUser dto.LoginReq
 	err:=json.NewDecoder(req.Body).Decode(&LoginUser)
 	if err!=nil{
-		fmt.Println("error in decoding Login credentials")
+		http.Error(w, "error in decoding credentials ", http.StatusBadRequest)
+		return
 	}
-	fmt.Println("added",LoginUser,LoginUser.Username)
-
 	var RetrivedUser dto.User
 	query := `SELECT id, username, password, access_token FROM restaurant_users WHERE username = $1`
 	err = database.Db.QueryRow(query, LoginUser.Username).Scan(&RetrivedUser.UserID, &RetrivedUser.Username, &RetrivedUser.Password, &RetrivedUser.AccessToken)
 	if err==sql.ErrNoRows{
-		fmt.Println("no users found ")
+		http.Error(w, "No Users Found", http.StatusBadRequest)
 		return
 	}
 	if err!=nil{
-		fmt.Print("error in query ", err)
+		http.Error(w, "error in query ", http.StatusBadRequest)
+		return
 	}
-	fmt.Println("ret",RetrivedUser)
-
 	err=bcrypt.CompareHashAndPassword([]byte(RetrivedUser.Password),[]byte(LoginUser.Password))
 	if err!=nil{
-		fmt.Println("Invalid credentials")
+		http.Error(w, "Invalid Credentials", http.StatusBadRequest)
 		return
 	}
 
 	token,err:=GenarateToken(RetrivedUser.UserID,RetrivedUser.AccessToken)
 	if err!=nil{
-		fmt.Print("error in generating tokens")
+		http.Error(w, "Error in Genereating new Token", http.StatusBadRequest)
 	}
 	json.NewEncoder(w).Encode(map[string]string{
 		"token":token,
