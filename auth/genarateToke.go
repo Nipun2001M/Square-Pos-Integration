@@ -33,8 +33,6 @@ func GetEnv(key string) string {
 
 var JwtSecret = []byte(GetEnv("JWTSECRET"))
 
-
-
 func GenarateToken(UserId int,AcessToken string) (string,error){
 	claims:=Claims{
 		UserID: UserId,

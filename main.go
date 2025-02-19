@@ -18,9 +18,6 @@ func main() {
 			log.Fatal(err)
 		}
 	}()
-
 	fmt.Println("server running on port 8080")
-
 	select {}
-	// Check why the above function is blocking the
 }
