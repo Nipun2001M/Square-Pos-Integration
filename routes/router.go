@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Try to handle this only using standard libraries
 func GetRoutes() *mux.Router{
 	router:=mux.NewRouter()
 	router.HandleFunc("/orders",handlers.CreateOrder).Methods(http.MethodPost)
