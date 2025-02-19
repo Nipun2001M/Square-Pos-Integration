@@ -1,12 +1,13 @@
 package auth
 
 import (
+	"log"
+	"os"
 	"time"
-	"github.com/golang-jwt/jwt/v5"
-)
 
-//later take from env
-var JwtSecret = []byte("Abvslkfssjfdsjfdn1111121212")
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
+)
 
 type Claims struct{
 	UserID      int    `json:"user_id"`
@@ -15,6 +16,24 @@ type Claims struct{
 
 
 }
+
+func GetEnv(key string) string {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	value := os.Getenv(key)
+	if value == "" {
+		log.Fatalf("Environment variable %s is not set", key)
+	}
+
+	return value
+}
+
+var JwtSecret = []byte(GetEnv("JWTSECRET"))
+
+
 
 func GenarateToken(UserId int,AcessToken string) (string,error){
 	claims:=Claims{

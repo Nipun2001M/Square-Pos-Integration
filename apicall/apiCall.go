@@ -40,13 +40,11 @@ func (c *ClientSq) ApiCall(method string, endpoint string, data interface{}) ([]
 		req, err = http.NewRequest(method, url, nil)
 	} else {
 		reqb, errMarshal := json.Marshal(data)
-		// How to assign return values form a function when we already have a defined variable at a top scope
 		if errMarshal != nil {
 			fmt.Println("Error marshaling JSON:", err)
 			return nil, fmt.Errorf("error marshaling request data")
 		}
 		req, err = http.NewRequest(method, url, bytes.NewBuffer(reqb))
-		// Handle the error
 	}
 	if err!=nil{
 		fmt.Println("error in creating req",err)
