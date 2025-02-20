@@ -16,6 +16,7 @@ type BasePriceMoney struct {
 } 
 
 type Order struct{
+	IdempotencyKey string `json:"idempotency_key"`
 	Order OrderRequest `json:"order"`
 }
 

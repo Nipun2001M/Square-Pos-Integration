@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	parsers "squarepos/Parsers"
 	"squarepos/apiClient"
 	"squarepos/auth"
 	"squarepos/dto"
@@ -31,7 +32,6 @@ func CreateOrder(w http.ResponseWriter, req *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	var defaultRes map[string]interface{}
-	// Have a dto here
 	json.Unmarshal(data,&defaultRes)
 	json.NewEncoder(w).Encode(defaultRes)
 }
@@ -50,9 +50,9 @@ func GetOrderById(w http.ResponseWriter,req *http.Request){
 		http.Error(w, "error in api call func", http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var defaultRes map[string]interface{}
-	json.Unmarshal(data,&defaultRes)
-	json.NewEncoder(w).Encode(defaultRes)
+	formattedRes:=dto.OrderResponse{}
+	json.Unmarshal(data,&formattedRes)
+	json.NewEncoder(w).Encode(parsers.OrderParser(formattedRes))
 
 
 
