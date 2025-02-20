@@ -31,7 +31,7 @@ func GetClient() *ClientSq{
 		client: &http.Client{Timeout: 10 * time.Second},
 	}
 }
-func (c *ClientSq) ApiCall(method string, endpoint string, data interface{}) ([]byte, error)  {
+func (c *ClientSq) ApiCall(method string, endpoint string, data interface{},AcessTokenFromHeaders string) ([]byte, error)  {
 	url := baseURL + endpoint
 	fmt.Println("url->",url)
 	var req *http.Request
@@ -52,7 +52,7 @@ func (c *ClientSq) ApiCall(method string, endpoint string, data interface{}) ([]
 
 	}
 	req.Header.Set("Square-Version", "2025-01-23")
-	req.Header.Set("Authorization", "Bearer "+c.AcessToken)
+	req.Header.Set("Authorization", "Bearer "+AcessTokenFromHeaders)
 	req.Header.Set("Content-Type", "application/json")
 	res,errreq:=c.client.Do(req)
 	if errreq!=nil{
