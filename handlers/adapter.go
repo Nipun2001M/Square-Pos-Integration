@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"squarepos/apicall"
+	"squarepos/apiClient"
 	"squarepos/auth"
 	"squarepos/dto"
 	"squarepos/middleware"
@@ -24,16 +24,14 @@ func CreateOrder(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Unauthorized: No valid claims", http.StatusUnauthorized)
 		return
 	}
-	client := apicall.GetClient()
+	client := apiClient.GetClient()
 	data, error := client.ApiCall(http.MethodPost, "orders", OrderReq,claims.AccessToken)
 	if error != nil {
 		http.Error(w, "error in api call func", http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var res dto.OrderResponse
 	var defaultRes map[string]interface{}
 	// Have a dto here
-	fmt.Println(res)
 	json.Unmarshal(data,&defaultRes)
 	json.NewEncoder(w).Encode(defaultRes)
 }
@@ -46,15 +44,13 @@ func GetOrderById(w http.ResponseWriter,req *http.Request){
 		http.Error(w, "Unauthorized: No valid claims", http.StatusUnauthorized)
 		return
 	}
-	client:=apicall.GetClient()
+	client:=apiClient.GetClient()
 	data,error:=client.ApiCall(http.MethodGet,fmt.Sprintf("orders/%s",id),nil,claims.AccessToken)
 	if error != nil {
 		http.Error(w, "error in api call func", http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var res dto.OrderResponse
 	var defaultRes map[string]interface{}
-	fmt.Println(res)
 	json.Unmarshal(data,&defaultRes)
 	json.NewEncoder(w).Encode(defaultRes)
 
@@ -75,16 +71,14 @@ func MakePayment(w http.ResponseWriter,req * http.Request){
 		http.Error(w,"error occured in decoding payment body",http.StatusBadRequest)
 		return
 	}
-	client:=apicall.GetClient()
+	client:=apiClient.GetClient()
 	data,err:=client.ApiCall(http.MethodPost,"payments",&PaymentReq,claims.AccessToken)
 	if err!=nil{
 		http.Error(w,"error in api call func",http.StatusBadRequest)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var res dto.OrderResponse
 	var defaultRes map[string]interface{}
-	fmt.Println(res)
 	json.Unmarshal(data,&defaultRes)
 	json.NewEncoder(w).Encode(defaultRes)
 

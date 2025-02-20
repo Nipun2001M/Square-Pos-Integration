@@ -9,9 +9,10 @@ type order struct {
 	ID         string `json:"id"`
 	LineItems  []Item `json:"line_items"`
 	LocationId string `json:"location_id"`
-	NetAmount  Money  `json:"net_amount_due_money"`
 	TotalMoney Money  `json:"total_money"`
 	State      string `json:"state"`
+	Tax		   	Money	`json:"total_tax_money"`
+	TrimPrefix	Money	`json:"total_tip_money"`
 }
 type Item struct {
 	BasePrice     Money  `json:"base_price_money"`

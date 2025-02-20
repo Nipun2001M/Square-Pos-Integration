@@ -1,5 +1,4 @@
-package apicall
-// TODO: Rename the package including file name
+package apiClient
 import (
 	"bytes"
 	"encoding/json"
