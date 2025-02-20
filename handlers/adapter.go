@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	parsers "squarepos/Parsers"
+	"squarepos/Parsers"
 	"squarepos/apiClient"
 	"squarepos/auth"
 	"squarepos/dto"
