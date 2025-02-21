@@ -32,7 +32,6 @@ func GetClient() *ClientSq{
 }
 func (c *ClientSq) ApiCall(method string, endpoint string, data interface{},AcessTokenFromHeaders string) ([]byte, error)  {
 	url := baseURL + endpoint
-	fmt.Println("url->",url)
 	var req *http.Request
 	var err error
 	if method == http.MethodGet {

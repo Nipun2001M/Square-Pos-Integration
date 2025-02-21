@@ -1,6 +1,7 @@
 package parsers
 
 import (
+	"fmt"
 	"squarepos/dto"
 	"strconv"
 )
@@ -14,7 +15,9 @@ func OrderParser(IncomingRes dto.OrderResponse) dto.OrderResponseOut{
 	} else {
 		orderRes.Isclosed = false
 	}
-	orderRes.Table=IncomingRes.Order.LocationId
+	fmt.Println("tbl id",IncomingRes.Order.Tableid)
+	orderRes.Table=IncomingRes.Order.Tableid
+	
 	for _,item:=range IncomingRes.Order.LineItems{
 		itemF:=dto.ItemFormated{
 			Name: item.Name,
