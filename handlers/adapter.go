@@ -64,7 +64,6 @@ func MakePayment(w http.ResponseWriter, req *http.Request) error {
 	if !ok || claims == nil {
 		http.Error(w, "Unauthorized: No valid claims", http.StatusUnauthorized)
 		return fmt.Errorf("Unauthorized: No valid claims")
-
 	}
 	if err != nil {
 		http.Error(w, "error occured in decoding payment body", http.StatusBadRequest)
@@ -77,9 +76,6 @@ func MakePayment(w http.ResponseWriter, req *http.Request) error {
 		return fmt.Errorf("error in api call func")
 	}
 	w.Header().Set("Content-Type", "application/json")
-	//var defaultRes map[string]interface{}
-	//json.Unmarshal(data, &defaultRes)
-	//json.NewEncoder(w).Encode(defaultRes)
 	return nil
 
 }
