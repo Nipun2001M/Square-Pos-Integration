@@ -1,4 +1,5 @@
 package apiClient
+
 import (
 	"bytes"
 	"encoding/json"
@@ -16,10 +17,10 @@ const baseURL = "https://connect.squareupsandbox.com/v2/"
 
 type ClientSq struct {
 	AcessToken string
-	client    *http.Client
+	client     *http.Client
 }
 
-func GetClient() *ClientSq{
+func GetClient() *ClientSq {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -27,10 +28,10 @@ func GetClient() *ClientSq{
 
 	return &ClientSq{
 		AcessToken: os.Getenv("SQUARE_ACCESS_TOKEN"),
-		client: &http.Client{Timeout: 10 * time.Second},
+		client:     &http.Client{Timeout: 10 * time.Second},
 	}
 }
-func (c *ClientSq) ApiCall(method string, endpoint string, data interface{},AcessTokenFromHeaders string) ([]byte, error)  {
+func (c *ClientSq) ApiCall(method string, endpoint string, data interface{}, AcessTokenFromHeaders string) ([]byte, error) {
 	url := baseURL + endpoint
 	var req *http.Request
 	var err error
@@ -44,23 +45,21 @@ func (c *ClientSq) ApiCall(method string, endpoint string, data interface{},Aces
 		}
 		req, err = http.NewRequest(method, url, bytes.NewBuffer(reqb))
 	}
-	if err!=nil{
-		fmt.Println("error in creating req",err)
-		return nil,fmt.Errorf("error in creating request")
+	if err != nil {
+		fmt.Println("error in creating req", err)
+		return nil, fmt.Errorf("error in creating request")
 
 	}
 	req.Header.Set("Square-Version", "2025-01-23")
 	req.Header.Set("Authorization", "Bearer "+AcessTokenFromHeaders)
 	req.Header.Set("Content-Type", "application/json")
-	res,errreq:=c.client.Do(req)
-	if errreq!=nil{
+	res, errreq := c.client.Do(req)
+	if errreq != nil {
 		log.Fatal("error in make request")
-		return nil,fmt.Errorf("error in make request")
+		return nil, fmt.Errorf("error in make request")
 	}
 
-	returnData,_:=io.ReadAll(res.Body)
-	return returnData,nil
-
-
+	returnData, _ := io.ReadAll(res.Body)
+	return returnData, nil
 
 }

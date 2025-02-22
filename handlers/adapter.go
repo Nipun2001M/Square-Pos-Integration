@@ -5,20 +5,17 @@ import (
 	"errors"
 	"fmt"
 	"github.com/clubpay-pos-worker/sdk-go/v2/qlub"
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"net/http"
-	"squarepos/Parsers"
+	parsers "squarepos/Parsers"
 	"squarepos/apiClient"
 	"squarepos/auth"
 	"squarepos/dto"
 	"squarepos/middleware"
 )
 
-// error
 func CreateOrder(w http.ResponseWriter, req *http.Request) error {
 	var OrderReq qlub.SubmitOrderCommand
-	fmt.Println("CreateOrder ", OrderReq)
 	err := json.NewDecoder(req.Body).Decode(&OrderReq)
 	if err != nil {
 		http.Error(w, "Error in decoding req body", http.StatusBadRequest)
@@ -28,25 +25,17 @@ func CreateOrder(w http.ResponseWriter, req *http.Request) error {
 	if !ok || claims == nil {
 		http.Error(w, "Unauthorized: No valid claims", http.StatusUnauthorized)
 		return errors.New("Unauthorized: No valid claims")
-
 	}
 	client := apiClient.GetClient()
-	_, error := client.ApiCall(http.MethodPost, "orders", OrderReq, claims.AccessToken)
+	_, error := client.ApiCall(http.MethodPost, "orders", parsers.IncomingOrderToSquareParse(OrderReq), claims.AccessToken)
 	if error != nil {
-		http.Error(w, "error in api call func", http.StatusBadRequest)
-		return errors.New("error in api call func")
+		return error
 	}
 	w.Header().Set("Content-Type", "application/json")
 	return nil
-	//formattedRes := dto.OrderResponse{}
-	//json.Unmarshal(data, &formattedRes)
-	//json.NewEncoder(w).Encode(parsers.OrderParser(formattedRes))
-	//json.NewEncoder(w).Encode(formattedRes)
-
 }
 
-// (order qlub.Order, err error)
-func GetOrderById(w http.ResponseWriter, req *http.Request) {
+func GetOrderById(w http.ResponseWriter, req *http.Request) (order qlub.Order, err error) {
 	params := mux.Vars(req)
 	id := params["id"]
 	claims, ok := req.Context().Value(middleware.UserContextKey).(*auth.Claims)
@@ -60,36 +49,37 @@ func GetOrderById(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "error in api call func", http.StatusBadRequest)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	formattedRes := dto.OrderResponse{}
-	json.Unmarshal(data, &formattedRes)
-	json.NewEncoder(w).Encode(parsers.OrderParser(formattedRes))
+	var defaultResponse dto.OrderResponse
+	json.Unmarshal(data, &defaultResponse)
+	order, err = parsers.SqureOrderToQlubOrder(defaultResponse)
+	return order, err
 
 }
 
-func MakePayment(w http.ResponseWriter, req *http.Request) {
-	//var PaymentReq qlub.UpdatePaymentStatusCommand
-	var PaymentReq dto.PaymentRequest
+func MakePayment(w http.ResponseWriter, req *http.Request) error {
+	var PaymentReq qlub.UpdatePaymentStatusCommand
 	err := json.NewDecoder(req.Body).Decode(&PaymentReq)
-	PaymentReq.IdempotencyKey = uuid.New().String()
 	claims, ok := req.Context().Value(middleware.UserContextKey).(*auth.Claims)
+	Payload := parsers.QlubPaytoSquarePay(PaymentReq)
 	if !ok || claims == nil {
 		http.Error(w, "Unauthorized: No valid claims", http.StatusUnauthorized)
-		return
+		return fmt.Errorf("Unauthorized: No valid claims")
 
 	}
 	if err != nil {
 		http.Error(w, "error occured in decoding payment body", http.StatusBadRequest)
-		return
+		return fmt.Errorf("error occured in decoding payment body")
 	}
 	client := apiClient.GetClient()
-	data, err := client.ApiCall(http.MethodPost, "payments", &PaymentReq, claims.AccessToken)
+	_, err = client.ApiCall(http.MethodPost, "payments", &Payload, claims.AccessToken)
 	if err != nil {
 		http.Error(w, "error in api call func", http.StatusBadRequest)
-		return
+		return fmt.Errorf("error in api call func")
 	}
 	w.Header().Set("Content-Type", "application/json")
-	var defaultRes map[string]interface{}
-	json.Unmarshal(data, &defaultRes)
-	json.NewEncoder(w).Encode(defaultRes)
+	//var defaultRes map[string]interface{}
+	//json.Unmarshal(data, &defaultRes)
+	//json.NewEncoder(w).Encode(defaultRes)
+	return nil
 
 }

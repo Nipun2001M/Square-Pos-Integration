@@ -1,6 +1,6 @@
 package dto
 
-//struct to take response came from squre pos
+// struct to take response came from squre pos
 type OrderResponse struct {
 	Order order `json:"order"`
 }
@@ -19,6 +19,7 @@ type order struct {
 	Tableid    string    `json:"reference_id"`
 }
 type Item struct {
+	ID            string     `json:"uid"`
 	BasePrice     Money      `json:"base_price_money"`
 	Name          string     `json:"name"`
 	Quantity      string     `json:"quantity"`
@@ -39,7 +40,7 @@ type NetAmount struct {
 	Tips          Money `json:"tip_money"`
 }
 
-//structs to format response to send
+// structs to format response to send
 type OrderResponseOut struct {
 	Id       string         `json:"id"`
 	OpenedAt string         `json:"opened_at"`
